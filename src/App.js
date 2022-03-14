@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 
@@ -172,7 +172,7 @@ const App = () => {
     }
   };
 
-  const unconfirmedCandidates = candidateList.reduce((all, item, idx) => {
+  const unconfirmedCandidates = candidateList.reduce((all, item) => {
     if (!item.confirmed) {
       all++;
     }
