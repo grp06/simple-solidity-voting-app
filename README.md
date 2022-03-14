@@ -1,0 +1,1 @@
+# Ethereum wave lottery frontend
