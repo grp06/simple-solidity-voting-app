@@ -14,13 +14,11 @@ const App = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [isOwner, setIsOwner] = useState();
   const [candidateToConfirm, setCandidateToConfirm] = useState(null);
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
   const [votingContract, setVotingContract] = useState(null);
   const [appLoading, setAppLoading] = useState(true);
 
   // change this every time we re-deploy
-  const contractAddress = '0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB';
+  const contractAddress = '0x1F52cbb5aCFAA439496e64c23634B39985e74438';
 
   const contractABI = abi.abi;
 
@@ -53,9 +51,7 @@ const App = () => {
 
   const setupSmartContractMethods = (ethereum) => {
     const provider = new ethers.providers.Web3Provider(ethereum);
-    setProvider(provider);
     const signer = provider.getSigner();
-    setSigner(signer);
     const contract = new ethers.Contract(contractAddress, contractABI, signer);
     setVotingContract(contract);
   };
@@ -77,6 +73,8 @@ const App = () => {
   const getCandidates = async () => {
     try {
       const candidateListRes = await votingContract.getCandidates();
+      const ownerRes = await votingContract.getOwner();
+      console.log('🚀 ~ owner address', ownerRes);
       const cleanedCandidates = candidateListRes.map((item) => {
         return {
           name: item.name,
@@ -86,7 +84,6 @@ const App = () => {
       });
       setCandidateList(cleanedCandidates);
       setAppLoading(false);
-
       setIsMining(false);
     } catch (error) {
       console.log(error);
@@ -96,6 +93,7 @@ const App = () => {
   const checkIfUserIsTheOwner = async () => {
     try {
       const userIsOwner = await votingContract.isOwner();
+      console.log('🚀 ~ userIsOwner', userIsOwner);
       setIsOwner(userIsOwner);
     } catch (error) {
       console.log(error);
