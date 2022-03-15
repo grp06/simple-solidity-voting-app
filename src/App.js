@@ -42,6 +42,7 @@ const App = () => {
         setCurrentAccount(account);
         setupSmartContractMethods(ethereum);
       } else {
+        setAppLoading(false);
         console.log('No authorized account found');
       }
     } catch (error) {
@@ -103,6 +104,7 @@ const App = () => {
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
+      console.log('🚀 ~ connectWal ~ ethereum', ethereum);
 
       if (!ethereum) {
         alert('Get MetaMask!');
@@ -182,6 +184,15 @@ const App = () => {
   return !appLoading ? (
     <div className='mainContainer'>
       <div className='message-error'>{messageError}</div>
+
+      {!currentAccount ? (
+        <div className='no-wallet'>
+          <div>You must install metamask and connect before using this app</div>
+          <button className='waveButton' onClick={connectWallet}>
+            Connect Wallet
+          </button>
+        </div>
+      ) : null}
 
       {!isMining ? (
         <>
@@ -276,11 +287,6 @@ const App = () => {
           Propose Candidate
         </button>
       </div>
-      {!currentAccount && (
-        <button className='waveButton' onClick={connectWallet}>
-          Connect Wallet
-        </button>
-      )}
     </div>
   ) : null;
 };
