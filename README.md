@@ -1,5 +1,8 @@
 # Solidity Voting App frontend
 
+
+[Live app deployed on Polygon Mumbai Testnet](https://simple-voting-app-frontend-cnybegtcg-grp06.vercel.app/)
+
 ### Features
 
 - Anyone can propose a candidate to be added to candidates list
