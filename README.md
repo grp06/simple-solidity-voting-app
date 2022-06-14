@@ -1,10 +1,8 @@
 # Solidity Voting App frontend
 
-
 [Live app deployed on Polygon Mumbai Testnet](https://simple-voting-app-frontend-cnybegtcg-grp06.vercel.app/)
 
-[Solidity code for the app](https://github.com/grp06/simple-voting-app-solidity)
-
+[Solidity code for the app](https://github.com/grp06/voting-app-solidity)
 
 ### Features
 
