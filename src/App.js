@@ -30,7 +30,7 @@ let minABI = [
 
 let kovanDaiAddress = '0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD';
 // change this every time we re-deploy
-const contractAddress = '0x7617d08DBb1f796c03e3Cb991c5F3b23dA187347';
+const contractAddress = '0xBDA5A3595A315D8473c3200E813394fFDCFCa66a';
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState('');
@@ -67,15 +67,6 @@ const App = () => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    if (aaveContract) {
-      const fallbackHit = (stuff) => {
-        console.log('stuff = ', stuff);
-      };
-      aaveContract.on('FallbackHit', fallbackHit);
-    }
-  }, [aaveContract]);
 
   const setupSmartContractMethods = (ethereum) => {
     const provider = new ethers.providers.Web3Provider(ethereum);
