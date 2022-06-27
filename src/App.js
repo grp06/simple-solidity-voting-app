@@ -1,44 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import abi from './utils/ChallengeApp.json';
 import { ethers } from 'ethers';
-import BigNumber from 'bignumber.js';
 
+import { Routes, Route } from 'react-router-dom';
+import CreateChallenge from './CreateChallenge';
 import './App.css';
-import abi from './utils/BasicAAVE.json';
-
-let minABI = [
-  // balanceOf
-  {
-    constant: true,
-    inputs: [{ name: '_owner', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: 'balance', type: 'uint256' }],
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      { name: 'usr', type: 'address' },
-      { name: 'wad', type: 'uint256' },
-    ],
-    name: 'approve',
-    outputs: [{ name: '', type: 'bool' }],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-];
-
-let kovanDaiAddress = '0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD';
+import ChallengePage from './ChallengePage';
 // change this every time we re-deploy
-const contractAddress = '0xBDA5A3595A315D8473c3200E813394fFDCFCa66a';
+const contractAddress = '0xa4B98735c1A6e8D248505D3AECf9f6e603132218';
 
-const App = () => {
-  const [currentAccount, setCurrentAccount] = useState('');
-  const [aaveContract, setAaveContract] = useState(null);
-  const [appLoading, setAppLoading] = useState(false);
-  const [daiContract, setDaiContract] = useState(null);
-
+function App() {
   const contractABI = abi.abi;
+
+  const [currentAccount, setCurrentAccount] = useState('');
+  const [myContract, setMyContract] = useState(null);
+  const [appLoading, setAppLoading] = useState(false);
 
   useEffect(() => {
     checkIfWalletIsConnected();
@@ -76,9 +52,7 @@ const App = () => {
       contractABI,
       signer
     );
-    setAaveContract(myContract);
-    const daiContract = new ethers.Contract(kovanDaiAddress, minABI, signer);
-    setDaiContract(daiContract);
+    setMyContract(myContract);
   };
 
   const connectWallet = async () => {
@@ -100,100 +74,32 @@ const App = () => {
       console.log(error);
     }
   };
-
-  const approveDaiSpending = () => {
-    daiContract.approve(contractAddress, ethers.utils.parseEther('1000'));
-  };
-
-  const getDaiBalance = async () => {
-    const res = await aaveContract.getDaiBalance();
-    const formatted = ethers.utils.formatEther(res._hex);
-    console.log('🚀 ~ getDaiBalance ~ formatted', formatted);
-  };
-
-  const getContractsDaiBalance = async () => {
-    const res = await aaveContract.getContractsDaiBalance();
-    const formatted = ethers.utils.formatEther(res._hex);
-    console.log('🚀 ~ getDaiBalance ~ formatted', formatted);
-  };
-
-  const getSender = async () => {
-    const res = await aaveContract.getSender();
-    console.log('🚀  ~ res', res);
-  };
-
-  const getAdaiValue = async () => {
-    const res = await aaveContract.getAdaiValue();
-    const formatted = ethers.utils.formatEther(res._hex);
-    console.log('🚀  ~ formatted', formatted);
-  };
-
-  const getMyWalletAdaiBalance = async () => {
-    const res = await aaveContract.getMyWalAdaiBalance();
-    const formatted = ethers.utils.formatEther(res._hex);
-    console.log('🚀  ~ formatted', formatted);
-  };
-
-  const transferDaiToContract = async () => {
-    const res = await aaveContract.transferDaiToContract();
-    console.log('🚀  ~ res', res);
-  };
-
-  const deposit = async () => {
-    const res = await aaveContract.deposit();
-    console.log('🚀  ~ res', res);
-  };
-
-  const viewAccount = async () => {
-    const res = await aaveContract.viewAccount();
-    console.log('🚀  ~ res', res[0]._hex);
-
-    console.log(res[0]._hex.toString());
-  };
-
-  return !appLoading ? (
-    <div className='mainContainer'>
+  return (
+    <div className='App'>
       {!currentAccount ? (
         <div className='no-wallet'>
           <div>You must install metamask and connect before using this app</div>
-          <button className='waveButton' onClick={connectWallet}>
+          <button className='btn-primary btn-lg' onClick={connectWallet}>
             Connect Wallet
           </button>
         </div>
       ) : null}
-      <div>
-        <button onClick={approveDaiSpending}>Approve</button>
-      </div>
-      <div>
-        <button onClick={getDaiBalance}>get dai balance</button>
-      </div>
-      <div>
-        <button onClick={getContractsDaiBalance}>
-          get contracts dai balance
-        </button>
-      </div>
-      <div>
-        <button onClick={getSender}>get sender</button>
-      </div>
-      <div>
-        <button onClick={getAdaiValue}>get aDai Value</button>
-      </div>
-      <div>
-        <button onClick={transferDaiToContract}>transferDaiToContract</button>
-      </div>
-      <div>
-        <button onClick={deposit}>Deposit</button>
-      </div>
-      <div>
-        <button onClick={getMyWalletAdaiBalance}>
-          get my wallets aDai balance
-        </button>
-      </div>
-      <div>
-        <button onClick={viewAccount}>view account</button>
-      </div>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <CreateChallenge myContract={myContract} appLoading={appLoading} />
+          }
+        />
+        <Route
+          path='/challenge-page/:name'
+          element={
+            <ChallengePage myContract={myContract} appLoading={appLoading} />
+          }
+        />
+      </Routes>
     </div>
-  ) : null;
-};
+  );
+}
 
 export default App;
